@@ -1,0 +1,123 @@
+#//////////////////////////////////////////////////////////////////////////////
+#   -- MAGMA (version 2.7.1) --
+#      Univ. of Tennessee, Knoxville
+#      Univ. of California, Berkeley
+#      Univ. of Colorado, Denver
+#      @date February 2023
+#//////////////////////////////////////////////////////////////////////////////
+
+# push previous directory
+dir_stack := $(dir_stack) $(cdir)
+cdir      := sparse_hip/blas
+# ----------------------------------------------------------------------
+
+
+# alphabetic order by base name (ignoring precision)
+libsparse_src += \
+	$(cdir)/magma_z_blaswrapper.cpp       \
+	$(cdir)/zbajac_csr.hip.cpp                 \
+	$(cdir)/zbajac_csr_overlap.hip.cpp         \
+	$(cdir)/zgeaxpy.hip.cpp                    \
+	$(cdir)/zgecsr5mv.hip.cpp                  \
+	$(cdir)/zgecsrmv.hip.cpp                   \
+	$(cdir)/zgeellmv.hip.cpp                   \
+	$(cdir)/zgeelltmv.hip.cpp                  \
+	$(cdir)/zgeellrtmv.hip.cpp                 \
+	$(cdir)/zgesellcmv.hip.cpp                 \
+	$(cdir)/zgesellcmmv.hip.cpp                \
+	$(cdir)/zjacobisetup.hip.cpp               \
+	$(cdir)/zlobpcg_shift.hip.cpp              \
+	$(cdir)/zlobpcg_residuals.hip.cpp          \
+	$(cdir)/zlobpcg_maxpy.hip.cpp              \
+	$(cdir)/zmdotc.hip.cpp                     \
+	$(cdir)/zgemvmdot.hip.cpp                  \
+	$(cdir)/zmdot_shfl.hip.cpp                 \
+	$(cdir)/zmergebicgstab2.hip.cpp            \
+	$(cdir)/zmergebicgstab3.hip.cpp            \
+	$(cdir)/zmergeidr.hip.cpp                  \
+	$(cdir)/zmergecg.hip.cpp                   \
+	$(cdir)/zmergecgs.hip.cpp                  \
+	$(cdir)/zmergeqmr.hip.cpp                  \
+	$(cdir)/zmergebicgstab.hip.cpp             \
+	$(cdir)/zmergetfqmr.hip.cpp                \
+	$(cdir)/zmgecsrmv.hip.cpp                  \
+	$(cdir)/zmgeellmv.hip.cpp                  \
+	$(cdir)/zmgeelltmv.hip.cpp                 \
+	$(cdir)/zmgesellcmmv.hip.cpp               \
+	$(cdir)/zpipelinedgmres.hip.cpp            \
+	
+# Wrappers to cusparse functions
+libsparse_src += \
+	$(cdir)/zilu.cpp                      \
+	$(cdir)/magma_ztrisolve.cpp           \
+	$(cdir)/magma_trisolve.cpp            \
+	$(cdir)/magma_zcuspmm.cpp             \
+	$(cdir)/magma_zcuspaxpy.cpp           \
+
+# Mixed precision SpMV
+libsparse_src += \
+        $(cdir)/zcgecsrmv_mixed_prec.hip.cpp        \
+
+# Iterative factorizations
+libsparse_src += \
+	$(cdir)/zparilu.cpp		              \
+	$(cdir)/zparilu_kernels.hip.cpp            \
+	$(cdir)/zparic_kernels.hip.cpp             \
+	$(cdir)/zparilut_kernels.hip.cpp           \
+	$(cdir)/zparilut_candidates.hip.cpp        \
+	$(cdir)/magma_zthrsrm.hip.cpp	          \
+	$(cdir)/magma_zpreselect.hip.cpp           \
+	$(cdir)/magma_zsampleselect.hip.cpp        \
+	$(cdir)/magma_zsampleselect_nodp.hip.cpp   \
+
+libsparse_dynamic_src += \
+	$(cdir)/magma_dsampleselect_core.hip.cpp   \
+	$(cdir)/magma_sampleselect.hip.cpp
+
+# Auxiliary routines
+libsparse_src += \
+	$(cdir)/zcompact.hip.cpp                   \
+	$(cdir)/magma_zmcsrcompressor_gpu.hip.cpp  \
+	$(cdir)/magma_zdiagcheck.hip.cpp           \
+	$(cdir)/zgecsrreimsplit.hip.cpp            \
+	$(cdir)/zgedensereimsplit.hip.cpp          \
+	$(cdir)/magma_zmconjugate.hip.cpp          \
+	$(cdir)/magma_zget_rowptr.hip.cpp          \
+	$(cdir)/magma_zmatrixtools_gpu.hip.cpp     \
+
+# Big data analytics
+libsparse_src += \
+	$(cdir)/zjaccard_weights.hip.cpp    \
+	
+# ISAI
+libsparse_src += \
+	$(cdir)/zgeisai_trsv.hip.cpp           \
+	$(cdir)/zgeisai_maxblock.hip.cpp	\
+	$(cdir)/zgeisai_batched32.hip.cpp      \
+
+# Stencil operators
+libsparse_src += \
+	$(cdir)/zge3pt.hip.cpp                   \
+	
+
+# Tester routines
+libsparse_src += \
+	$(cdir)/zmergeblockkrylov.hip.cpp          \
+
+
+libsparse_src += \
+	$(cdir)/zgecscsyncfreetrsm.hip.cpp         \
+# add some additional compiler flags for those
+custom_nvccflags_obj = \
+	$(cdir)/sgecscsyncfreetrsm.o \
+	$(cdir)/dgecscsyncfreetrsm.o \
+	$(cdir)/cgecscsyncfreetrsm.o \
+	$(cdir)/zgecscsyncfreetrsm.o \
+
+$(custom_nvccflags_obj): NVCCFLAGS += -Xptxas -dlcm=cg
+
+
+# ----------------------------------------------------------------------
+# pop first directory
+cdir      := $(firstword $(dir_stack))
+dir_stack := $(wordlist 2, $(words $(dir_stack)), $(dir_stack))

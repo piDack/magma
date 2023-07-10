@@ -1,0 +1,462 @@
+#//////////////////////////////////////////////////////////////////////////////
+#   -- MAGMA (version 2.7.1) --
+#      Univ. of Tennessee, Knoxville
+#      Univ. of California, Berkeley
+#      Univ. of Colorado, Denver
+#      @date February 2023
+#//////////////////////////////////////////////////////////////////////////////
+
+# push previous directory
+dir_stack := $(dir_stack) $(cdir)
+cdir      := magmablas_hip
+# ----------------------------------------------------------------------
+
+
+hdr += \
+	$(cdir)/commonblas_z.h		\
+	$(cdir)/ztrtri.hip.hpp		\
+	$(cdir)/ztrtri_lower_device.hip.hpp		\
+	$(cdir)/ztrtri_upper_device.hip.hpp		\
+	$(cdir)/zgerbt.h		\
+	$(cdir)/zpotf2_devicesfunc.hip.hpp		\
+	$(cdir)/zlarfg_devicesfunc.hip.hpp		\
+	$(cdir)/ztrsv_template_device.hip.hpp	\
+	$(cdir)/zgetf2_devicefunc.hip.hpp		\
+	$(cdir)/zlaswp_device.hip.hpp		\
+	$(cdir)/zgeqr2_batched_fused.hip.hpp	\
+	$(cdir)/zlarf_batched_fused.hip.hpp	\
+
+# alphabetic order by base name (ignoring precision)
+libmagma_src += \
+	$(cdir)/zaxpycp.hip.cpp		\
+	$(cdir)/zcaxpycp.hip.cpp		\
+    $(cdir)/zdiinertia.hip.cpp   \
+	$(cdir)/zgeadd.hip.cpp		\
+	$(cdir)/zgeadd2.hip.cpp		\
+    $(cdir)/zgeam.hip.cpp        \
+	$(cdir)/sgemm.hip.cpp		\
+	$(cdir)/dgemm.hip.cpp		\
+	$(cdir)/cgemm.hip.cpp		\
+	$(cdir)/zgemm.hip.cpp		\
+	$(cdir)/zgemm_reduce.hip.cpp		\
+	$(cdir)/zgemv_conj.hip.cpp		\
+	$(cdir)/zgemv_fermi.hip.cpp		\
+	$(cdir)/zgerbt.hip.cpp		\
+	$(cdir)/zgerbt_kernels.hip.cpp	\
+	$(cdir)/zgetmatrix_transpose.cpp\
+    $(cdir)/zheinertia.hip.cpp           \
+	$(cdir)/zhemm.hip.cpp		\
+	$(cdir)/zhemv.hip.cpp		\
+	$(cdir)/zhemv_upper.hip.cpp		\
+	$(cdir)/zher2k.cpp	\
+	$(cdir)/zherk.cpp	\
+	$(cdir)/zherk_small_reduce.hip.cpp	\
+	$(cdir)/zlacpy.hip.cpp		\
+	$(cdir)/zlacpy_conj.hip.cpp		\
+	$(cdir)/zlacpy_sym_in.hip.cpp	\
+	$(cdir)/zlacpy_sym_out.hip.cpp	\
+	$(cdir)/zlag2c.hip.cpp		\
+	$(cdir)/clag2z.hip.cpp		\
+	$(cdir)/zlange.hip.cpp		\
+	$(cdir)/zlanhe.hip.cpp		\
+	$(cdir)/zlaqps2_gpu.hip.cpp		\
+	$(cdir)/zlarf.hip.cpp		\
+	$(cdir)/zlarfbx.hip.cpp		\
+	$(cdir)/zlarfg-v2.hip.cpp		\
+	$(cdir)/zlarfg.hip.cpp		\
+	$(cdir)/zlarfgx-v2.hip.cpp		\
+	$(cdir)/zlarft_kernels.hip.cpp		\
+	$(cdir)/zlarfx.hip.cpp		\
+	$(cdir)/zlascl.hip.cpp		\
+	$(cdir)/zlascl2.hip.cpp		\
+	$(cdir)/zlascl_2x2.hip.cpp		\
+	$(cdir)/zlascl_diag.hip.cpp		\
+	$(cdir)/zlaset.hip.cpp		\
+	$(cdir)/zlaset_band.hip.cpp		\
+	$(cdir)/zlaswp.hip.cpp		\
+	$(cdir)/zclaswp.hip.cpp		\
+	$(cdir)/zlaswp_sym.hip.cpp		\
+	$(cdir)/zlat2c.hip.cpp		\
+	$(cdir)/clat2z.hip.cpp		\
+	$(cdir)/dznrm2.hip.cpp		\
+	$(cdir)/zsetmatrix_transpose.cpp\
+	$(cdir)/zswap.hip.cpp		\
+	$(cdir)/zswapblk.hip.cpp		\
+	$(cdir)/zswapdblk.hip.cpp		\
+	$(cdir)/zsymm.hip.cpp		\
+	$(cdir)/zsymmetrize.hip.cpp		\
+	$(cdir)/zsymmetrize_tiles.hip.cpp	\
+	$(cdir)/zsymv.hip.cpp		\
+	$(cdir)/zsymv_upper.hip.cpp		\
+	$(cdir)/ztranspose.hip.cpp		\
+	$(cdir)/ztranspose_conj.hip.cpp		\
+	$(cdir)/ztranspose_conj_inplace.hip.cpp	\
+	$(cdir)/ztranspose_inplace.hip.cpp	\
+	$(cdir)/ztrmm.hip.cpp		\
+	$(cdir)/ztrmv.hip.cpp		\
+	$(cdir)/ztrsm.hip.cpp		\
+	$(cdir)/ztrsv.hip.cpp		\
+	$(cdir)/ztrtri_diag.hip.cpp		\
+	$(cdir)/ztrtri_lower.hip.cpp		\
+	$(cdir)/ztrtri_lower_batched.hip.cpp		\
+	$(cdir)/ztrtri_upper.hip.cpp		\
+	$(cdir)/ztrtri_upper_batched.hip.cpp		\
+	$(cdir)/magmablas_z_v1.cpp	\
+	$(cdir)/magmablas_zc_v1.cpp	\
+
+# multi-GPU
+libmagma_src += \
+	$(cdir)/zbcyclic.cpp		\
+	$(cdir)/zgetmatrix_transpose_mgpu.cpp	\
+	$(cdir)/zsetmatrix_transpose_mgpu.cpp	\
+	$(cdir)/zhemv_mgpu.hip.cpp			\
+	$(cdir)/zhemv_mgpu_upper.hip.cpp		\
+	$(cdir)/zhemm_mgpu.cpp			\
+	$(cdir)/zher2k_mgpu.cpp			\
+	$(cdir)/zherk_mgpu.cpp			\
+
+# panels for one-sided factorizations in CUDA
+libmagma_src += \
+	$(cdir)/zgetf2.hip.cpp		\
+	$(cdir)/zgeqr2.cpp		\
+	$(cdir)/zgeqr2x_gpu-v4.hip.cpp	\
+	$(cdir)/zpotf2.hip.cpp		\
+
+# native kernels
+libmagma_src += \
+	$(cdir)/zgetf2_native_kernel.hip.cpp		\
+        $(cdir)/zhetrs.hip.cpp                       \
+
+# batched files, alphabetic order by base name (ignoring precision)
+libmagma_src += \
+	$(cdir)/zgeadd_batched.hip.cpp		\
+	$(cdir)/zgemm_batched.cpp		\
+	$(cdir)/cgemm_batched_core.hip.cpp		\
+	$(cdir)/dgemm_batched_core.hip.cpp		\
+	$(cdir)/sgemm_batched_core.hip.cpp		\
+	$(cdir)/zgemm_batched_core.hip.cpp		\
+	$(cdir)/zgemm_batched_smallsq.hip.cpp		\
+	$(cdir)/zgemv_batched.cpp		\
+	$(cdir)/cgemv_batched_core.hip.cpp		\
+	$(cdir)/dgemv_batched_core.hip.cpp		\
+	$(cdir)/sgemv_batched_core.hip.cpp		\
+	$(cdir)/zgemv_batched_core.hip.cpp		\
+	$(cdir)/zgemv_batched_smallsq.hip.cpp		\
+	$(cdir)/zhemv_batched_core.hip.cpp		\
+	$(cdir)/zgeqr2_batched.hip.cpp		\
+	$(cdir)/zgeqr2_batched_fused_reg.hip.cpp		\
+	$(cdir)/zgeqr2_batched_fused_reg_medium.hip.cpp		\
+	$(cdir)/zgeqr2_batched_fused_reg_tall.hip.cpp		\
+	$(cdir)/zgeqr2_batched_fused_sm.hip.cpp		\
+	$(cdir)/zgeqrf_batched_smallsq.hip.cpp		\
+	$(cdir)/zgerbt_func_batched.hip.cpp		\
+	$(cdir)/zgesv_batched_small.hip.cpp		\
+	$(cdir)/zgetf2_kernels.hip.cpp		\
+	$(cdir)/zgetrf_batched_smallsq_noshfl.hip.cpp\
+	$(cdir)/zgetrf_batched_smallsq_shfl.hip.cpp	\
+    $(cdir)/zgbtrf_batched.hip.cpp               \
+	$(cdir)/getrf_setup_pivinfo.hip.cpp		\
+	$(cdir)/zhemm_batched_core.hip.cpp		\
+	$(cdir)/zher2k_batched.cpp		\
+	$(cdir)/zherk_batched.cpp		\
+	$(cdir)/cherk_batched_core.hip.cpp		\
+	$(cdir)/zherk_batched_core.hip.cpp		\
+	$(cdir)/zlarf_batched_fused_reg.hip.cpp	\
+	$(cdir)/zlarf_batched_fused_reg_medium.hip.cpp	\
+	$(cdir)/zlarf_batched_fused_reg_tall.hip.cpp	\
+	$(cdir)/zlarf_batched_fused_sm.hip.cpp	\
+	$(cdir)/zlaswp_batched.hip.cpp		\
+	$(cdir)/zpotf2_kernels.hip.cpp		\
+	$(cdir)/set_pointer.hip.cpp			\
+	$(cdir)/zset_pointer.hip.cpp			\
+	$(cdir)/zsyr2k_batched.cpp		\
+	$(cdir)/dsyrk_batched_core.hip.cpp		\
+	$(cdir)/ssyrk_batched_core.hip.cpp		\
+	$(cdir)/ztrmm_batched_core.hip.cpp		\
+	$(cdir)/ztrsm_batched.cpp		\
+	$(cdir)/ztrsm_batched_core.cpp		\
+	$(cdir)/ztrsm_small_batched.hip.cpp		\
+	$(cdir)/ztrsv_batched.hip.cpp		\
+	$(cdir)/ztrtri_diag_batched.hip.cpp		\
+	$(cdir)/zgetf2_nopiv_kernels.hip.cpp		\
+
+# vbatched files
+libmagma_src += \
+	$(cdir)/zgemm_vbatched_core.hip.cpp	\
+	$(cdir)/cgemm_vbatched_core.hip.cpp	\
+	$(cdir)/dgemm_vbatched_core.hip.cpp	\
+	$(cdir)/sgemm_vbatched_core.hip.cpp	\
+	$(cdir)/zgemv_vbatched_core.hip.cpp	\
+	$(cdir)/cgemv_vbatched_core.hip.cpp	\
+	$(cdir)/dgemv_vbatched_core.hip.cpp	\
+	$(cdir)/sgemv_vbatched_core.hip.cpp	\
+	$(cdir)/zhemm_vbatched_core.hip.cpp	\
+	$(cdir)/zhemv_vbatched_core.hip.cpp	\
+	$(cdir)/cherk_vbatched_core.hip.cpp	\
+	$(cdir)/zherk_vbatched_core.hip.cpp	\
+	$(cdir)/ssyrk_vbatched_core.hip.cpp	\
+	$(cdir)/dsyrk_vbatched_core.hip.cpp	\
+	$(cdir)/ztrmm_vbatched_core.hip.cpp	\
+	$(cdir)/ztrsm_small_vbatched.hip.cpp	\
+	$(cdir)/ztrsm_inv_vbatched_core.hip.cpp	\
+	$(cdir)/ztrtri_diag_vbatched.hip.cpp	\
+
+libmagma_src += \
+	$(cdir)/zgemm_vbatched.cpp		\
+	$(cdir)/zgemv_vbatched.cpp		\
+	$(cdir)/zhemm_vbatched.cpp		\
+	$(cdir)/zhemv_vbatched.cpp		\
+	$(cdir)/zher2k_vbatched.cpp		\
+	$(cdir)/zherk_vbatched.cpp		\
+	$(cdir)/zsyr2k_vbatched.cpp		\
+	$(cdir)/zsyrk_vbatched.cpp		\
+	$(cdir)/ztrmm_vbatched.cpp		\
+	$(cdir)/ztrsm_vbatched_core.cpp	\
+	$(cdir)/ztrsm_vbatched.cpp		\
+	$(cdir)/ztrsm_inv_vbatched.cpp		\
+
+libmagma_src += \
+	$(cdir)/zgetf2_kernels_var.hip.cpp	\
+	$(cdir)/zlaswp_vbatched.hip.cpp		\
+	$(cdir)/zpotf2_kernels_var.hip.cpp	\
+
+# aux vbatched files
+libmagma_src += \
+	$(cdir)/prefix_sum.hip.cpp		\
+	$(cdir)/vbatched_aux.hip.cpp		\
+	$(cdir)/vbatched_check.hip.cpp		\
+
+# batch files ( host )
+libmagma_src += \
+	$(cdir)/blas_zbatched.cpp	\
+
+# FP16 files
+libmagma_src += \
+	$(cdir)/hgemm_batched_core.hip.cpp    \
+	$(cdir)/slag2h.hip.cpp                \
+	$(cdir)/hlag2s.hip.cpp	             \
+	$(cdir)/hlaconvert.hip.cpp	         \
+	$(cdir)/hlaswp.hip.cpp		         \
+	$(cdir)/hset_pointer.hip.cpp		     \
+
+# aux files for mixed-precision POSV-IRGMRES
+libmagma_src += \
+	$(cdir)/zposv_irgmres_kernels.hip.cpp    \
+
+# ----------------------------------------------------------------------
+# extra include dependencies
+$(cdir)/strtri_diag.$(o_ext): $(cdir)/strtri.hip.hpp
+$(cdir)/dtrtri_diag.$(o_ext): $(cdir)/dtrtri.hip.hpp
+$(cdir)/ctrtri_diag.$(o_ext): $(cdir)/ctrtri.hip.hpp
+$(cdir)/ztrtri_diag.$(o_ext): $(cdir)/ztrtri.hip.hpp
+
+$(cdir)/strtri_upper.$(o_ext): $(cdir)/strtri.hip.hpp $(cdir)/strtri_upper_device.hip.hpp
+$(cdir)/dtrtri_upper.$(o_ext): $(cdir)/dtrtri.hip.hpp $(cdir)/dtrtri_upper_device.hip.hpp
+$(cdir)/ctrtri_upper.$(o_ext): $(cdir)/ctrtri.hip.hpp $(cdir)/ctrtri_upper_device.hip.hpp
+$(cdir)/ztrtri_upper.$(o_ext): $(cdir)/ztrtri.hip.hpp $(cdir)/ztrtri_upper_device.hip.hpp
+
+$(cdir)/strtri_lower.$(o_ext): $(cdir)/strtri.hip.hpp $(cdir)/strtri_lower_device.hip.hpp
+$(cdir)/dtrtri_lower.$(o_ext): $(cdir)/dtrtri.hip.hpp $(cdir)/dtrtri_lower_device.hip.hpp
+$(cdir)/ctrtri_lower.$(o_ext): $(cdir)/ctrtri.hip.hpp $(cdir)/ctrtri_lower_device.hip.hpp
+$(cdir)/ztrtri_lower.$(o_ext): $(cdir)/ztrtri.hip.hpp $(cdir)/ztrtri_lower_device.hip.hpp
+
+$(cdir)/sgerbt.$(o_ext): $(cdir)/sgerbt.h
+$(cdir)/dgerbt.$(o_ext): $(cdir)/dgerbt.h
+$(cdir)/cgerbt.$(o_ext): $(cdir)/cgerbt.h
+$(cdir)/zgerbt.$(o_ext): $(cdir)/zgerbt.h
+
+$(cdir)/sgerbt_batched.$(o_ext): $(cdir)/sgerbt.h
+$(cdir)/dgerbt_batched.$(o_ext): $(cdir)/dgerbt.h
+$(cdir)/cgerbt_batched.$(o_ext): $(cdir)/cgerbt.h
+$(cdir)/zgerbt_batched.$(o_ext): $(cdir)/zgerbt.h
+
+$(cdir)/strtri_diag_batched.$(o_ext): $(cdir)/strtri.hip.hpp
+$(cdir)/dtrtri_diag_batched.$(o_ext): $(cdir)/dtrtri.hip.hpp
+$(cdir)/ctrtri_diag_batched.$(o_ext): $(cdir)/ctrtri.hip.hpp
+$(cdir)/ztrtri_diag_batched.$(o_ext): $(cdir)/ztrtri.hip.hpp
+
+$(cdir)/strtri_upper_batched.$(o_ext): $(cdir)/strtri.hip.hpp $(cdir)/strtri_upper_device.hip.hpp
+$(cdir)/dtrtri_upper_batched.$(o_ext): $(cdir)/dtrtri.hip.hpp $(cdir)/dtrtri_upper_device.hip.hpp
+$(cdir)/ctrtri_upper_batched.$(o_ext): $(cdir)/ctrtri.hip.hpp $(cdir)/ctrtri_upper_device.hip.hpp
+$(cdir)/ztrtri_upper_batched.$(o_ext): $(cdir)/ztrtri.hip.hpp $(cdir)/ztrtri_upper_device.hip.hpp
+
+$(cdir)/strtri_lower_batched.$(o_ext): $(cdir)/strtri.hip.hpp $(cdir)/strtri_lower_device.hip.hpp
+$(cdir)/dtrtri_lower_batched.$(o_ext): $(cdir)/dtrtri.hip.hpp $(cdir)/dtrtri_lower_device.hip.hpp
+$(cdir)/ctrtri_lower_batched.$(o_ext): $(cdir)/ctrtri.hip.hpp $(cdir)/ctrtri_lower_device.hip.hpp
+$(cdir)/ztrtri_lower_batched.$(o_ext): $(cdir)/ztrtri.hip.hpp $(cdir)/ztrtri_lower_device.hip.hpp
+
+$(cdir)/sgeqr2_batched.$(o_ext): $(cdir)/slarfg_devicesfunc.hip.hpp
+$(cdir)/dgeqr2_batched.$(o_ext): $(cdir)/dlarfg_devicesfunc.hip.hpp
+$(cdir)/cgeqr2_batched.$(o_ext): $(cdir)/clarfg_devicesfunc.hip.hpp
+$(cdir)/zgeqr2_batched.$(o_ext): $(cdir)/zlarfg_devicesfunc.hip.hpp
+
+$(cdir)/sgeqr2_batched_fused_reg.$(o_ext): $(cdir)/sgeqr2_batched_fused.hip.hpp
+$(cdir)/dgeqr2_batched_fused_reg.$(o_ext): $(cdir)/dgeqr2_batched_fused.hip.hpp
+$(cdir)/cgeqr2_batched_fused_reg.$(o_ext): $(cdir)/cgeqr2_batched_fused.hip.hpp
+$(cdir)/zgeqr2_batched_fused_reg.$(o_ext): $(cdir)/zgeqr2_batched_fused.hip.hpp
+
+$(cdir)/sgeqr2_batched_fused_reg_medium.$(o_ext): $(cdir)/sgeqr2_batched_fused.hip.hpp
+$(cdir)/dgeqr2_batched_fused_reg_medium.$(o_ext): $(cdir)/dgeqr2_batched_fused.hip.hpp
+$(cdir)/cgeqr2_batched_fused_reg_medium.$(o_ext): $(cdir)/cgeqr2_batched_fused.hip.hpp
+$(cdir)/zgeqr2_batched_fused_reg_medium.$(o_ext): $(cdir)/zgeqr2_batched_fused.hip.hpp
+
+$(cdir)/sgeqr2_batched_fused_reg_tall.$(o_ext): $(cdir)/sgeqr2_batched_fused.hip.hpp
+$(cdir)/dgeqr2_batched_fused_reg_tall.$(o_ext): $(cdir)/dgeqr2_batched_fused.hip.hpp
+$(cdir)/cgeqr2_batched_fused_reg_tall.$(o_ext): $(cdir)/cgeqr2_batched_fused.hip.hpp
+$(cdir)/zgeqr2_batched_fused_reg_tall.$(o_ext): $(cdir)/zgeqr2_batched_fused.hip.hpp
+
+$(cdir)/sgeqr2_batched_fused_sm.$(o_ext): $(cdir)/sgeqr2_batched_fused.hip.hpp
+$(cdir)/dgeqr2_batched_fused_sm.$(o_ext): $(cdir)/dgeqr2_batched_fused.hip.hpp
+$(cdir)/cgeqr2_batched_fused_sm.$(o_ext): $(cdir)/cgeqr2_batched_fused.hip.hpp
+$(cdir)/zgeqr2_batched_fused_sm.$(o_ext): $(cdir)/zgeqr2_batched_fused.hip.hpp
+
+$(cdir)/sgetf2_kernels.$(o_ext): control/batched_kernel_param.h
+$(cdir)/dgetf2_kernels.$(o_ext): control/batched_kernel_param.h
+$(cdir)/cgetf2_kernels.$(o_ext): control/batched_kernel_param.h
+$(cdir)/zgetf2_kernels.$(o_ext): control/batched_kernel_param.h
+
+$(cdir)/sgetf2_native_kernel.$(o_ext): control/batched_kernel_param.h
+$(cdir)/dgetf2_native_kernel.$(o_ext): control/batched_kernel_param.h
+$(cdir)/cgetf2_native_kernel.$(o_ext): control/batched_kernel_param.h
+$(cdir)/zgetf2_native_kernel.$(o_ext): control/batched_kernel_param.h
+
+$(cdir)/slarf_batched_fused_reg.$(o_ext): $(cdir)/slarf_batched_fused.hip.hpp
+$(cdir)/dlarf_batched_fused_reg.$(o_ext): $(cdir)/dlarf_batched_fused.hip.hpp
+$(cdir)/clarf_batched_fused_reg.$(o_ext): $(cdir)/clarf_batched_fused.hip.hpp
+$(cdir)/zlarf_batched_fused_reg.$(o_ext): $(cdir)/zlarf_batched_fused.hip.hpp
+
+$(cdir)/slarf_batched_fused_reg_medium.$(o_ext): $(cdir)/slarf_batched_fused.hip.hpp
+$(cdir)/dlarf_batched_fused_reg_medium.$(o_ext): $(cdir)/dlarf_batched_fused.hip.hpp
+$(cdir)/clarf_batched_fused_reg_medium.$(o_ext): $(cdir)/clarf_batched_fused.hip.hpp
+$(cdir)/zlarf_batched_fused_reg_medium.$(o_ext): $(cdir)/zlarf_batched_fused.hip.hpp
+
+$(cdir)/slarf_batched_fused_reg_tall.$(o_ext): $(cdir)/slarf_batched_fused.hip.hpp
+$(cdir)/dlarf_batched_fused_reg_tall.$(o_ext): $(cdir)/dlarf_batched_fused.hip.hpp
+$(cdir)/clarf_batched_fused_reg_tall.$(o_ext): $(cdir)/clarf_batched_fused.hip.hpp
+$(cdir)/zlarf_batched_fused_reg_tall.$(o_ext): $(cdir)/zlarf_batched_fused.hip.hpp
+
+$(cdir)/spotf2_kernels.$(o_ext): $(cdir)/spotf2_devicesfunc.hip.hpp
+$(cdir)/dpotf2_kernels.$(o_ext): $(cdir)/dpotf2_devicesfunc.hip.hpp
+$(cdir)/cpotf2_kernels.$(o_ext): $(cdir)/cpotf2_devicesfunc.hip.hpp
+$(cdir)/zpotf2_kernels.$(o_ext): $(cdir)/zpotf2_devicesfunc.hip.hpp
+
+$(cdir)/spotf2_kernels_var.$(o_ext): $(cdir)/spotf2_devicesfunc.hip.hpp
+$(cdir)/dpotf2_kernels_var.$(o_ext): $(cdir)/dpotf2_devicesfunc.hip.hpp
+$(cdir)/cpotf2_kernels_var.$(o_ext): $(cdir)/cpotf2_devicesfunc.hip.hpp
+$(cdir)/zpotf2_kernels_var.$(o_ext): $(cdir)/zpotf2_devicesfunc.hip.hpp
+
+$(cdir)/sgetf2_kernels.$(o_ext): $(cdir)/sgetf2_devicefunc.hip.hpp
+$(cdir)/dgetf2_kernels.$(o_ext): $(cdir)/dgetf2_devicefunc.hip.hpp
+$(cdir)/cgetf2_kernels.$(o_ext): $(cdir)/cgetf2_devicefunc.hip.hpp
+$(cdir)/zgetf2_kernels.$(o_ext): $(cdir)/zgetf2_devicefunc.hip.hpp
+
+$(cdir)/sgetf2_kernels_var.$(o_ext): $(cdir)/sgetf2_devicefunc.hip.hpp
+$(cdir)/dgetf2_kernels_var.$(o_ext): $(cdir)/dgetf2_devicefunc.hip.hpp
+$(cdir)/cgetf2_kernels_var.$(o_ext): $(cdir)/cgetf2_devicefunc.hip.hpp
+$(cdir)/zgetf2_kernels_var.$(o_ext): $(cdir)/zgetf2_devicefunc.hip.hpp
+
+$(cdir)/ztrsv_batched.$(o_ext): $(cdir)/ztrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/ctrsv_batched.$(o_ext): $(cdir)/ctrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dtrsv_batched.$(o_ext): $(cdir)/dtrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/strsv_batched.$(o_ext): $(cdir)/strsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/ztrsv.$(o_ext): $(cdir)/ztrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/ctrsv.$(o_ext): $(cdir)/ctrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dtrsv.$(o_ext): $(cdir)/dtrsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/strsv.$(o_ext): $(cdir)/strsv_template_device.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/zgemv_fermi.$(o_ext): $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cgemv_fermi.$(o_ext): $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dgemv_fermi.$(o_ext): $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/sgemv_fermi.$(o_ext): $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/zgemv_batched_core.$(o_ext): $(cdir)/gemv_template_kernel_batched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cgemv_batched_core.$(o_ext): $(cdir)/gemv_template_kernel_batched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dgemv_batched_core.$(o_ext): $(cdir)/gemv_template_kernel_batched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/sgemv_batched_core.$(o_ext): $(cdir)/gemv_template_kernel_batched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/zhemv_batched_core.$(o_ext): $(cdir)/hemv_template_kernel_batched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/chemv_batched_core.$(o_ext): $(cdir)/hemv_template_kernel_batched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dsymv_batched_core.$(o_ext): $(cdir)/hemv_template_kernel_batched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ssymv_batched_core.$(o_ext): $(cdir)/hemv_template_kernel_batched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zgemv_vbatched_core.$(o_ext): $(cdir)/gemv_template_kernel_vbatched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cgemv_vbatched_core.$(o_ext): $(cdir)/gemv_template_kernel_vbatched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dgemv_vbatched_core.$(o_ext): $(cdir)/gemv_template_kernel_vbatched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/sgemv_vbatched_core.$(o_ext): $(cdir)/gemv_template_kernel_vbatched.hip.hpp $(cdir)/gemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/zhemv_vbatched_core.$(o_ext): $(cdir)/hemv_template_kernel_vbatched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/chemv_vbatched_core.$(o_ext): $(cdir)/hemv_template_kernel_vbatched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dsymv_vbatched_core.$(o_ext): $(cdir)/hemv_template_kernel_vbatched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ssymv_vbatched_core.$(o_ext): $(cdir)/hemv_template_kernel_vbatched.hip.hpp $(cdir)/hemv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zgemm_batched_core.$(o_ext): $(cdir)/gemm_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cgemm_batched_core.$(o_ext): $(cdir)/gemm_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dgemm_batched_core.$(o_ext): $(cdir)/gemm_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/sgemm_batched_core.$(o_ext): $(cdir)/gemm_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/hgemm_batched_core.$(o_ext): $(cdir)/hgemm_template_kernel_batched.hip.hpp $(cdir)/hgemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/sgemm_vbatched_core.$(o_ext): $(cdir)/gemm_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dgemm_vbatched_core.$(o_ext): $(cdir)/gemm_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cgemm_vbatched_core.$(o_ext): $(cdir)/gemm_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/zgemm_vbatched_core.$(o_ext): $(cdir)/gemm_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/ztrmm_batched_core.$(o_ext): $(cdir)/trmm_template_kernel_batched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ctrmm_batched_core.$(o_ext): $(cdir)/trmm_template_kernel_batched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dtrmm_batched_core.$(o_ext): $(cdir)/trmm_template_kernel_batched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/strmm_batched_core.$(o_ext): $(cdir)/trmm_template_kernel_batched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/ztrmm_vbatched_core.$(o_ext): $(cdir)/trmm_template_kernel_vbatched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ctrmm_vbatched_core.$(o_ext): $(cdir)/trmm_template_kernel_vbatched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dtrmm_vbatched_core.$(o_ext): $(cdir)/trmm_template_kernel_vbatched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/strmm_vbatched_core.$(o_ext): $(cdir)/trmm_template_kernel_vbatched.hip.hpp $(cdir)/trmm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/ztrsm_small_vbatched.$(o_ext): $(cdir)/trsm_template_kernel_vbatched.hip.hpp $(cdir)/trsm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ctrsm_small_vbatched.$(o_ext): $(cdir)/trsm_template_kernel_vbatched.hip.hpp $(cdir)/trsm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dtrsm_small_vbatched.$(o_ext): $(cdir)/trsm_template_kernel_vbatched.hip.hpp $(cdir)/trsm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/strsm_small_vbatched.$(o_ext): $(cdir)/trsm_template_kernel_vbatched.hip.hpp $(cdir)/trsm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zhemm_batched_core.$(o_ext): $(cdir)/hemm_template_kernel_batched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/chemm_batched_core.$(o_ext): $(cdir)/hemm_template_kernel_batched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dsymm_batched_core.$(o_ext): $(cdir)/hemm_template_kernel_batched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ssymm_batched_core.$(o_ext): $(cdir)/hemm_template_kernel_batched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zhemm_vbatched_core.$(o_ext): $(cdir)/hemm_template_kernel_vbatched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/chemm_vbatched_core.$(o_ext): $(cdir)/hemm_template_kernel_vbatched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dsymm_vbatched_core.$(o_ext): $(cdir)/hemm_template_kernel_vbatched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ssymm_vbatched_core.$(o_ext): $(cdir)/hemm_template_kernel_vbatched.hip.hpp $(cdir)/hemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zherk_batched_core.$(o_ext): $(cdir)/herk_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cherk_batched_core.$(o_ext): $(cdir)/herk_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dsyrk_batched_core.$(o_ext): $(cdir)/herk_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/ssyrk_batched_core.$(o_ext): $(cdir)/herk_template_kernel_batched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/zherk_vbatched_core.$(o_ext): $(cdir)/herk_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/cherk_vbatched_core.$(o_ext): $(cdir)/herk_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/dsyrk_vbatched_core.$(o_ext): $(cdir)/herk_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+$(cdir)/ssyrk_vbatched_core.$(o_ext): $(cdir)/herk_template_kernel_vbatched.hip.hpp $(cdir)/gemm_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp
+
+$(cdir)/ztrmv.$(o_ext): $(cdir)/trmv_template_kernel.hip.hpp $(cdir)/trmv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/ctrmv.$(o_ext): $(cdir)/trmv_template_kernel.hip.hpp $(cdir)/trmv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/dtrmv.$(o_ext): $(cdir)/trmv_template_kernel.hip.hpp $(cdir)/trmv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+$(cdir)/strmv.$(o_ext): $(cdir)/trmv_template_kernel.hip.hpp $(cdir)/trmv_template_device.hip.hpp $(cdir)/gemm_template_device_defs.hip.hpp control/batched_kernel_param.h
+
+$(cdir)/zgemm_fermi.$(o_ext): $(cdir)/zgemm_fermi_kernels.h $(cdir)/gemm_stencil.hip.hpp $(cdir)/gemm_kernel.hip.hpp $(cdir)/gemm_stencil_defs.h
+$(cdir)/cgemm_fermi.$(o_ext): $(cdir)/cgemm_fermi_kernels.h $(cdir)/gemm_stencil.hip.hpp $(cdir)/gemm_kernel.hip.hpp $(cdir)/gemm_stencil_defs.h
+$(cdir)/dgemm_fermi.$(o_ext): $(cdir)/dgemm_fermi_kernels.h $(cdir)/gemm_stencil.hip.hpp $(cdir)/gemm_kernel.hip.hpp $(cdir)/gemm_stencil_defs.h
+$(cdir)/sgemm_fermi.$(o_ext): $(cdir)/sgemm_fermi_kernels.h $(cdir)/gemm_stencil.hip.hpp $(cdir)/gemm_kernel.hip.hpp $(cdir)/gemm_stencil_defs.h
+
+$(cdir)/zlaswp_batched.$(o_ext): $(cdir)/zlaswp_device.hip.hpp
+$(cdir)/claswp_batched.$(o_ext): $(cdir)/claswp_device.hip.hpp
+$(cdir)/dlaswp_batched.$(o_ext): $(cdir)/dlaswp_device.hip.hpp
+$(cdir)/slaswp_batched.$(o_ext): $(cdir)/slaswp_device.hip.hpp
+
+$(cdir)/zlaswp_vbatched.$(o_ext): $(cdir)/zlaswp_device.hip.hpp
+$(cdir)/claswp_vbatched.$(o_ext): $(cdir)/claswp_device.hip.hpp
+$(cdir)/dlaswp_vbatched.$(o_ext): $(cdir)/dlaswp_device.hip.hpp
+$(cdir)/slaswp_vbatched.$(o_ext): $(cdir)/slaswp_device.hip.hpp
+
+# ----------------------------------------------------------------------
+# pop first directory
+cdir      := $(firstword $(dir_stack))
+dir_stack := $(wordlist 2, $(words $(dir_stack)), $(dir_stack))

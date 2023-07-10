@@ -1,0 +1,39 @@
+#include "hip/hip_runtime.h"
+/*
+    -- MAGMA (version 2.7.1) --
+       Univ. of Tennessee, Knoxville
+       Univ. of California, Berkeley
+       Univ. of Colorado, Denver
+       @date February 2023
+       
+       @author Ahmad Abdelfattah
+       
+       dedicated src for pointer arithmetic in fp16
+*/
+
+#include "magma_internal.h"
+
+#define PRECISION_h
+
+__global__ void kernel_hset_pointer(
+    magmaHalf **output_array,
+    magmaHalf *input,
+    magma_int_t lda,
+    magma_int_t row, magma_int_t column, 
+    magma_int_t batch_offset)
+{
+    output_array[blockIdx.x] =  input + blockIdx.x * batch_offset + row + column * lda;
+}
+
+extern "C"
+void magma_hset_pointer(
+    magmaHalf **output_array,
+    magmaHalf *input,
+    magma_int_t lda,
+    magma_int_t row, magma_int_t column, 
+    magma_int_t batch_offset,
+    magma_int_t batchCount, 
+    magma_queue_t queue)
+{
+    hipLaunchKernelGGL(kernel_hset_pointer, dim3(batchCount), dim3(1), 0, queue->hip_stream() , output_array, input, lda,  row, column, batch_offset);
+}
